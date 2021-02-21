@@ -11,3 +11,6 @@ v0.1.0
 
 v0.1.1
 * Hours, minutes and seconds always have a leading zero
+
+v0.1.2
+* Remove debug code
