@@ -1,0 +1,13 @@
+{
+  "name": "pcf8583",
+  "apiVersion": "1.0.0",
+  "author": "Harald Kubota",
+  "version": "0.1.0",
+  "description": "Decoding PCF8583 Time and Date for Saleae Logic 2",
+  "extensions": {
+    "pcf8583": {
+      "type": "HighLevelAnalyzer",
+      "entryPoint": "HighLevelAnalyzer.Hla"
+    }
+  }
+}
