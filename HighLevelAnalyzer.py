@@ -156,9 +156,9 @@ class Hla(HighLevelAnalyzer):
                             ampm=''
                         if self.time_start_time:
                             return AnalyzerFrame('time', self.time_start_time, frame.end_time, {
-                                'second': self.second,
-                                'minute': self.minute,
-                                'hour': self.hour,
+                                'second': str(self.second).zfill(2),
+                                'minute': str(self.minute).zfill(2),
+                                'hour': str(self.hour).zfill(2),
                                 'ampm': ampm
                             })
                         else:
