@@ -1,7 +1,6 @@
 # High Level Analyzer
 # For more information and documentation, please go to https://support.saleae.com/extensions/high-level-analyzer-extensions
 
-
 from saleae.analyzers import HighLevelAnalyzer, AnalyzerFrame, StringSetting, NumberSetting, ChoicesSetting
 
 
@@ -16,9 +15,6 @@ class Hla(HighLevelAnalyzer):
     weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Unknown']
 
     result_types = {
-        # 'mytype': {
-        #     'format': 'Output type: {{type}}, Input type: {{data.input_type}}'
-        # },
         'indexReg': {
             'format': 'Set IndexReg={{data.register}}'
         },
@@ -39,7 +35,7 @@ class Hla(HighLevelAnalyzer):
         },
         'time': {
             'format':
-                '{{data.hour}}:{{data.minute}}:{{data.second}}{{data.ampm}}'
+            '{{data.hour}}:{{data.minute}}:{{data.second}}{{data.ampm}}'
         },
         'yearday': {
             'format': 'Year={{data.year}}, Day={{data.day}}'
@@ -49,7 +45,7 @@ class Hla(HighLevelAnalyzer):
         },
         'date': {
             'format':
-                '{{data.year}}-{{data.month}}-{{data.day}} ({{data.weekday}})'
+            '{{data.year}}-{{data.month}}-{{data.day}} ({{data.weekday}})'
         }
     }
 
@@ -59,12 +55,6 @@ class Hla(HighLevelAnalyzer):
 
         Settings can be accessed using the same name used above.
         '''
-
-        # with open("/tmp/pcf.log", "a+") as f:
-        #     # f.write(f'Settings: {self.my_string_setting}');
-        #     f.write(
-        #         f'Choice={self.pcf8583_addr_string}, Addr = {self.pcf8583_addr}\n'
-        #     )
 
         if self.pcf8583_addr_string == '0x51':
             self.pcf8583_addr = 0x51
@@ -85,7 +75,6 @@ class Hla(HighLevelAnalyzer):
         self.time_start_time = None
         self.date_start_time = None
 
-
     def __bcd_to_int(self, b):
         return (b >> 4) * 10 + (b & 0x0f)
 
@@ -94,23 +83,14 @@ class Hla(HighLevelAnalyzer):
             int.from_bytes(f.data['data'], byteorder='little'))
 
     def decode(self, frame: AnalyzerFrame):
-
-        # with open("/tmp/pcf.log", "a+") as f:
-        #     f.write(
-        #         f"addr={self.pcf8583_addr}, last_address={self.last_address}\n")
-        #     for attr in dir(frame):
-        #         f.write(f"frame.{attr} = {getattr(frame, attr)}\n")
-
         if frame.type == 'address':
             self.last_address = int.from_bytes(frame.data['address'],
                                                byteorder='little')
-            if self.last_address == self.pcf8583_addr and not frame.data['read']:
+            if self.last_address == self.pcf8583_addr and not frame.data[
+                    'read']:
                 self.last_was_index_write = True
                 self.register_addr = 0
             return
-            # return AnalyzerFrame('mytype', frame.start_time, frame.end_time, {
-            #     'input_type': frame.type
-            # })
 
         if self.last_address == self.pcf8583_addr:
             if frame.type == 'data':
@@ -135,9 +115,9 @@ class Hla(HighLevelAnalyzer):
                         return AnalyzerFrame(
                             'second', frame.start_time, frame.end_time, {
                                 'value':
-                                    self.__bcd_to_int(
-                                        int.from_bytes(frame.data['data'],
-                                                       byteorder='little'))
+                                self.__bcd_to_int(
+                                    int.from_bytes(frame.data['data'],
+                                                   byteorder='little'))
                             })
                     if self.register_addr - 1 == 3:
                         self.minute = self.__bcd_to_int(
@@ -146,9 +126,9 @@ class Hla(HighLevelAnalyzer):
                         return AnalyzerFrame(
                             'minute', frame.start_time, frame.end_time, {
                                 'value':
-                                    self.__bcd_to_int(
-                                        int.from_bytes(frame.data['data'],
-                                                       byteorder='little'))
+                                self.__bcd_to_int(
+                                    int.from_bytes(frame.data['data'],
+                                                   byteorder='little'))
                             })
                     # Here comes the hour, try to combine with seconds and minutes we
                     # probably got earlier
@@ -215,17 +195,11 @@ class Hla(HighLevelAnalyzer):
                 return AnalyzerFrame(
                     'data', frame.start_time, frame.end_time, {
                         'register':
-                            self.register_addr - 1,
+                        self.register_addr - 1,
                         'value':
-                            hex(
-                                int.from_bytes(frame.data['data'],
-                                               byteorder='little'))
+                        hex(
+                            int.from_bytes(frame.data['data'],
+                                           byteorder='little'))
                     })
 
         return
-        # Return the data frame itself
-        # return AnalyzerFrame('mytype', frame.start_time, frame.end_time, {
-        #     'input_type': frame.type
-        # })
-
-# Formatted via yapf --style google HighLevelAnalyzer.py
